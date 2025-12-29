@@ -1,0 +1,85 @@
+{# Template para crear una nueva actividad #}
+{% extends 'base.html' %}
+
+{# Título de la página #}
+{% block title %}Crear Actividad - FACil{% endblock %}
+
+{# Contenido principal #}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        {# Tarjeta principal #}
+        <div class="card">
+            {# Encabezado de la tarjeta #}
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0"><i class="fas fa-plus-circle me-2"></i>Crear Nueva Actividad</h4>
+            </div>
+            {# Cuerpo de la tarjeta #}
+            <div class="card-body">
+                {# Formulario de creación #}
+                <form method="post">
+                    {% csrf_token %}
+                    {# Primera fila: Código y Descripción #}
+                    <div class="row">
+                        {# Campo: Código de la actividad #}
+                        <div class="col-md-4 mb-3">
+                            <label for="{{ form.codigo.id_for_label }}" class="form-label">Código *</label>
+                            {{ form.codigo }}
+                            {% if form.codigo.errors %}
+                                <div class="text-danger">{{ form.codigo.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Descripción de la actividad #}
+                        <div class="col-md-8 mb-3">
+                            <label for="{{ form.actividad.id_for_label }}" class="form-label">Actividad *</label>
+                            {{ form.actividad }}
+                            {% if form.actividad.errors %}
+                                <div class="text-danger">{{ form.actividad.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Segunda fila: Precio y Estado #}
+                    <div class="row">
+                        {# Campo: Precio de la actividad #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.precio.id_for_label }}" class="form-label">Precio (CUP) *</label>
+                            <div class="input-group">
+                                {{ form.precio }}
+                                <span class="input-group-text">CUP</span>
+                            </div>
+                            {% if form.precio.errors %}
+                                <div class="text-danger">{{ form.precio.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Estado de la actividad #}
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check mt-4">
+                                {{ form.activo }}
+                                <label for="{{ form.activo.id_for_label }}" class="form-check-label">
+                                    Actividad Activa
+                                </label>
+                                {% if form.activo.errors %}
+                                    <div class="text-danger">{{ form.activo.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Botones de acción #}
+                    <div class="d-flex justify-content-between">
+                        {# Botón Cancelar - Vuelve a la lista #}
+                        <a href="{% url 'lista_actividades' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancelar
+                        </a>
+                        {# Botón Guardar - Envía el formulario #}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Guardar Actividad
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

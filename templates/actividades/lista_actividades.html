@@ -1,0 +1,98 @@
+{# Template para mostrar la lista de actividades #}
+{% extends 'base.html' %}
+
+{# Título de la página #}
+{% block title %}Lista de Actividades - FACil{% endblock %}
+
+{# Contenido principal #}
+{% block content %}
+{# Encabezado con título y botón de agregar #}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-list me-2"></i>Lista de Actividades</h2>
+    {# Botón para crear nueva actividad #}
+    <a href="{% url 'crear_actividad' %}" class="btn btn-primary">
+        <i class="fas fa-plus me-2"></i>Agregar Actividad
+    </a>
+</div>
+
+{# Barra de búsqueda #}
+<div class="row mb-4">
+    <div class="col-md-6">
+        <form method="get" class="d-flex">
+            {# Campo de búsqueda #}
+            <input type="text" name="q" class="form-control me-2" 
+                   placeholder="Buscar por código o actividad..." 
+                   value="{{ query }}">
+            {# Botón buscar #}
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="fas fa-search me-1"></i>Buscar
+            </button>
+            {# Botón limpiar búsqueda (solo se muestra si hay búsqueda) #}
+            {% if query %}
+                <a href="{% url 'lista_actividades' %}" class="btn btn-outline-secondary ms-2">
+                    <i class="fas fa-times me-1"></i>Limpiar
+                </a>
+            {% endif %}
+        </form>
+    </div>
+</div>
+
+{# Tabla de actividades #}
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover">
+                {# Encabezados de la tabla #}
+                <thead class="table-dark">
+                    <tr>
+                        <th>Código</th>
+                        <th>Actividad</th>
+                        <th>Precio</th>
+                        <th>Activo</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                {# Cuerpo de la tabla #}
+                <tbody>
+                    {% for actividad in actividades %}
+                    <tr>
+                        {# Código de la actividad #}
+                        <td>{{ actividad.codigo }}</td>
+                        {# Descripción de la actividad #}
+                        <td>{{ actividad.actividad }}</td>
+                        {# Precio con formato de 2 decimales #}
+                        <td>{{ actividad.precio|floatformat:2 }} CUP</td>
+                        {# Estado de la actividad con indicador visual #}
+                        <td>
+                            {% if actividad.activo %}
+                                <span class="badge bg-success">Sí</span>
+                            {% else %}
+                                <span class="badge bg-danger">No</span>
+                            {% endif %}
+                        </td>
+                        {# Botones de acción #}
+                        <td>
+                            <div class="btn-group" role="group">
+                                {# Botón para editar actividad #}
+                                <a href="{% url 'editar_actividad' actividad.id %}" 
+                                   class="btn btn-sm btn-outline-secondary" 
+                                   title="Editar">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    {# Mensaje cuando no hay actividades #}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            <i class="fas fa-info-circle me-2"></i>No hay actividades registradas.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

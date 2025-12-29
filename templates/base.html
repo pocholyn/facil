@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}FACil Sistema de Facturación{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            min-height: 100vh;
+            background-color: #343a40;
+            color: white;
+        }
+        .sidebar .nav-link {
+            color: rgba(255,255,255,.75);
+        }
+        .sidebar .nav-link:hover {
+            color: white;
+        }
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: #495057;
+        }
+        .main-content {
+            margin-left: 0;
+        }
+        @media (min-width: 768px) {
+            .main-content {
+                margin-left: 250px;
+            }
+        }
+        .top-bar {
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem;
+        }
+        /* Clase personalizada para color teal */
+        .bg-teal {
+            background-color: #20c997 !important;
+        }
+    </style>
+</head>
+<body>
+    {# Modal para mostrar mensajes de permiso almacenados en sesión #}
+    {% if request.session.permission_message %}
+    <div class="modal fade" id="permModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title"><i class="fas fa-exclamation-triangle me-2"></i>Permisos insuficientes</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    {{ request.session.permission_message }}
+                </div>
+                <div class="modal-footer">
+                    <a href="{% url 'facturas:dashboard' %}" class="btn btn-primary">Ir al Dashboard</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    <div class="d-flex">
+        <!-- Sidebar -->
+        <nav class="sidebar col-md-2 d-none d-md-block">
+            <div class="sidebar-sticky">
+                <div class="p-3">
+                    <h5 class="text-center mb-4">FACil</h5>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'facturas:dashboard' %}">
+                                <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'lista_clientes' %}active{% endif %}" href="{% url 'lista_clientes' %}">
+                                <i class="fas fa-users me-2"></i>Clientes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'lista_actividades' %}active{% endif %}" href="{% url 'lista_actividades' %}">
+                                <i class="fas fa-list me-2"></i>Actividades
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'lista_facturas' %}active{% endif %}" href="{% url 'facturas:lista_facturas' %}">
+                                <i class="fas fa-file-invoice me-2"></i>Facturas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'lista_ofertas' %}active{% endif %}" href="{% url 'ofertas:lista_ofertas' %}">
+                                <i class="fas fa-file-contract me-2"></i>Ofertas
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.resolver_match.url_name == 'lista_planes' %}active{% endif %}" href="{% url 'lista_planes' %}">
+                                <i class="fas fa-chart-line me-2"></i>Planes
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'admin:index' %}">
+                                <i class="fas fa-cog me-2"></i>Administración
+                            </a>
+                        </li>
+                        <li class="nav-item mt-3">
+                            <form method="post" action="{% url 'logout' %}">
+                                {% csrf_token %}
+                                <button type="submit" class="nav-link btn btn-link p-0 text-start">
+                                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main content -->
+        <div class="main-content flex-grow-1">
+            <!-- Top bar -->
+            <div class="top-bar">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">FACil Sistema de Facturación</h4>
+                    <div>
+                        <span class="me-3">Usuario: {{ user.username }}</span>
+                        <form method="post" action="{% url 'logout' %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">
+                                <i class="fas fa-sign-out-alt"></i> Salir
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Page content -->
+            <div class="container-fluid p-4">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% if request.session.permission_message %}
+    <script>
+    // Obtener cookie CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        var permModalEl = document.getElementById('permModal');
+        if (permModalEl) {
+            var permModal = new bootstrap.Modal(permModalEl);
+            permModal.show();
+
+            permModalEl.addEventListener('hidden.bs.modal', function () {
+                // Limpiar la variable de sesión en el servidor para no mostrar el modal otra vez
+                fetch("{% url 'clear_permission_message' %}", {
+                    method: 'POST',
+                    headers: {'X-CSRFToken': getCookie('csrftoken')},
+                    credentials: 'same-origin'
+                }).catch(function(){});
+            });
+        }
+    });
+    </script>
+    {% endif %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

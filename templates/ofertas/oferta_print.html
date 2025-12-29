@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oferta {{ oferta.numero_oferta }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            line-height: 1.0;
+            margin: 0;
+            padding: 20px 50px;
+        }
+        .header {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .header-center {
+            text-align: center;
+        }
+        .logo {
+            max-width: 80px;
+            max-height: 80px;
+            vertical-align: middle;
+            margin-right: 10px;
+        }
+        .oferta-title {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0 10px;
+            vertical-align: middle;
+        }
+        .numero-oferta {
+            font-size: 18px;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+        .empresa-info {
+            font-size: 11px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .empresa-info p {
+            margin: 0;
+        }
+        .cliente-info {
+            margin-bottom: 20px;
+        }
+        .cliente-info table {
+            width: 90%;
+            margin: 0 auto;
+        }
+        table {
+            width: 90%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 4px;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .total-row {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .pago-info {
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .firmas-table {
+            width: 90%;
+            margin: 40px auto 0;
+        }
+        .firma {
+            text-align: center;
+            padding: 5px;
+        }
+        .firma-line {
+            border-bottom: 1px solid #000;
+            margin: 10px 0 5px 0;
+        }
+        .firma p {
+            margin: 0;
+        }
+        @page {
+            size: letter portrait;
+        }
+        @media print {
+            body {
+                margin: 0;
+                padding: 10mm;
+                display: flex;
+                flex-direction: column;
+                min-height: 100vh;
+            }
+            .content {
+                flex-grow: 1;
+            }
+            .signatures {
+                margin-top: auto;
+            }
+            .header, .empresa-info, .cliente-info, table, .pago-info, .firmas-table {
+                page-break-inside: avoid;
+            }
+            h3 {
+                text-align: center;
+            }
+            .firma {
+                text-align: left;
+            }
+            .firma p {
+                line-height: 2.5;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <div class="header-center">
+                {% if empresa.logo %}
+                    <img src="{{ empresa.logo.url }}" alt="Logo" class="logo">
+                {% endif %}
+                <span class="oferta-title">Oferta</span>
+                <span class="numero-oferta">{{ oferta.numero_oferta }}</span>
+            </div>
+        </div>
+
+        <div class="empresa-info">
+            <p><strong>{% if empresa %}{{ empresa.nombre }}{% else %}Empresa no configurada{% endif %}</strong></p>
+            <p>Código REEUP: {% if empresa %}{{ empresa.codigo_reeup }}{% else %}-{% endif %} | Código NIT: {% if empresa %}{{ empresa.codigo_nit }}{% else %}-{% endif %} | Cuenta Bancaria: {% if empresa %}{{ empresa.cuenta_bancaria_cup }}{% else %}-{% endif %}</p>
+            <p>Dirección: {% if empresa %}{{ empresa.direccion_postal }}{% else %}-{% endif %} | Correo: {% if empresa %}{{ empresa.correo_electronico }}{% else %}-{% endif %} | Teléfonos: {% if empresa %}{{ empresa.telefonos }}{% else %}-{% endif %}</p>
+        </div>
+
+        <h3>Datos del Cliente</h3>
+        <div class="cliente-info">
+            <table>
+                <tr>
+                    <td><strong>Nombre:</strong> {{ oferta.cliente.nombre }}</td>
+                    <td><strong>Número de Contrato:</strong> {{ oferta.cliente.numero_contrato }}</td>
+                    <td><strong>Fecha del Contrato:</strong> {{ oferta.cliente.fecha_contrato|date:"d/m/Y" }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Código REEUP:</strong> {{ oferta.cliente.codigo_reeup }}</td>
+                    <td><strong>Código NIT:</strong> {{ oferta.cliente.codigo_nit }}</td>
+                    <td><strong>Cuenta Bancaria:</strong> {{ oferta.cliente.cuenta_bancaria_cup }}</td>
+                </tr>
+                <tr>
+                    <td><strong>Dirección:</strong> {{ oferta.cliente.direccion_postal }}</td>
+                    <td><strong>Correo:</strong> {{ oferta.cliente.correo_electronico }}</td>
+                    <td><strong>Teléfonos:</strong> {{ oferta.cliente.telefonos }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <h3>Detalles de la Oferta</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>Código</th>
+                    <th>Actividad</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Importe</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ item.actividad.codigo }}</td>
+                    <td>{{ item.actividad.actividad }}</td>
+                    <td style="text-align: right;">{{ item.cantidad }}</td>
+                    <td style="text-align: right;">${{ item.precio|floatformat:2 }}</td>
+                    <td style="text-align: right;">${{ item.importe|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="5" style="text-align: right;">IMPORTE TOTAL</td>
+                    <td style="text-align: right;">${{ total|floatformat:2 }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        {% if oferta.observaciones %}
+        <div style="margin-top: 10px; font-size: 10px; line-height: 1.2; text-align: left;">
+            {{ oferta.observaciones }}
+        </div>
+        {% endif %}
+
+        <div class="pago-info">
+            PAGUESE POR TRANSFERENCIA BANCARIA A: {% if empresa %}{{ empresa.nombre }} - Cuenta Bancaria: {{ empresa.cuenta_bancaria_cup }}{% else %}Titular no configurado{% endif %}
+        </div>
+    </div>
+
+    <div class="signatures">
+        <table class="firmas-table">
+            <tr>
+                <td class="firma">
+                    <div class="firma-line"></div>
+                    <p>Confeccionado por</p>
+                    <p>Nombre y Apellidos</p>
+                    <p>Cargo</p>
+                    <p>CI</p>
+                    <p>Fecha</p>
+                    <p>Firma</p>
+                </td>
+                <td class="firma">
+                    <div class="firma-line"></div>
+                    <p>Aprobado por</p>
+                    <p>Nombre y Apellidos</p>
+                    <p>Cargo</p>
+                    <p>CI</p>
+                    <p>Fecha</p>
+                    <p>Firma</p>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,17 @@
+- [x] Modificar clientes/views.py para agregar funcionalidad de búsqueda por nombre o número de contrato
+- [x] Modificar templates/clientes/lista_clientes.html para agregar formulario de búsqueda
+- [x] Probar la funcionalidad de búsqueda en la vista de lista de clientes
+- [x] Modificar actividades/views.py para agregar funcionalidad de búsqueda por código o actividad
+- [x] Modificar templates/actividades/lista_actividades.html para agregar formulario de búsqueda
+- [x] Probar la funcionalidad de búsqueda en la vista de lista de actividades
+- [x] Modificar facturas/views.py para agregar funcionalidad de búsqueda por número, cliente y área de venta
+- [x] Modificar templates/facturas/lista_facturas.html para agregar formulario de búsqueda
+- [x] Probar la funcionalidad de búsqueda en la vista de lista de facturas
+- [x] Agregar filtro por estado en facturas/views.py
+- [x] Agregar filtro por rango de fechas en facturas/views.py
+- [x] Actualizar templates/facturas/lista_facturas.html para incluir filtros de estado y fechas
+- [x] Probar los nuevos filtros en la vista de lista de facturas
+- [x] Crear módulo Ofertas con modelos, vistas, formularios, admin y URLs
+- [x] Agregar app 'ofertas' a INSTALLED_APPS en settings.py
+- [x] Crear migración inicial para ofertas
+- [x] Aplicar migración de ofertas

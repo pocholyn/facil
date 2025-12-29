@@ -1,0 +1,251 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Cliente - FACil{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h4 class="mb-0"><i class="fas fa-user-edit me-2"></i>Editar Cliente: {{ cliente.nombre }}</h4>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre del Cliente *</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="text-danger">{{ form.nombre.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.numero_contrato.id_for_label }}" class="form-label">Número de Contrato *</label>
+                            {{ form.numero_contrato }}
+                            {% if form.numero_contrato.errors %}
+                                <div class="text-danger">{{ form.numero_contrato.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.fecha_contrato.id_for_label }}" class="form-label">Fecha Contrato *</label>
+                            {{ form.fecha_contrato }}
+                            {% if form.fecha_contrato.errors %}
+                                <div class="text-danger">{{ form.fecha_contrato.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.fecha_vencimiento_contrato.id_for_label }}" class="form-label">Fecha Vencimiento Contrato *</label>
+                            {{ form.fecha_vencimiento_contrato }}
+                            {% if form.fecha_vencimiento_contrato.errors %}
+                                <div class="text-danger">{{ form.fecha_vencimiento_contrato.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.codigo_reeup.id_for_label }}" class="form-label">Código REEUP *</label>
+                            {{ form.codigo_reeup }}
+                            {% if form.codigo_reeup.errors %}
+                                <div class="text-danger">{{ form.codigo_reeup.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.codigo_nit.id_for_label }}" class="form-label">Código NIT *</label>
+                            {{ form.codigo_nit }}
+                            {% if form.codigo_nit.errors %}
+                                <div class="text-danger">{{ form.codigo_nit.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.cuenta_bancaria_cup.id_for_label }}" class="form-label">Cuenta Bancaria CUP *</label>
+                            {{ form.cuenta_bancaria_cup }}
+                            {% if form.cuenta_bancaria_cup.errors %}
+                                <div class="text-danger">{{ form.cuenta_bancaria_cup.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.direccion_postal.id_for_label }}" class="form-label">Dirección Postal *</label>
+                            {{ form.direccion_postal }}
+                            {% if form.direccion_postal.errors %}
+                                <div class="text-danger">{{ form.direccion_postal.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.correo_electronico.id_for_label }}" class="form-label">Correo Electrónico</label>
+                            {{ form.correo_electronico }}
+                            {% if form.correo_electronico.errors %}
+                                <div class="text-danger">{{ form.correo_electronico.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.telefonos.id_for_label }}" class="form-label">Teléfonos</label>
+                            {{ form.telefonos }}
+                            {% if form.telefonos.errors %}
+                                <div class="text-danger">{{ form.telefonos.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Información del Director</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_director.id_for_label }}" class="form-label">Nombre del Director *</label>
+                            {{ form.nombre_director }}
+                            {% if form.nombre_director.errors %}
+                                <div class="text-danger">{{ form.nombre_director.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_director.id_for_label }}" class="form-label">CI del Director *</label>
+                            {{ form.ci_director }}
+                            {% if form.ci_director.errors %}
+                                <div class="text-danger">{{ form.ci_director.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Información del Económico</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_economico.id_for_label }}" class="form-label">Nombre del Económico *</label>
+                            {{ form.nombre_economico }}
+                            {% if form.nombre_economico.errors %}
+                                <div class="text-danger">{{ form.nombre_economico.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_economico.id_for_label }}" class="form-label">CI del Económico *</label>
+                            {{ form.ci_economico }}
+                            {% if form.ci_economico.errors %}
+                                <div class="text-danger">{{ form.ci_economico.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Personas Autorizadas a Facturar</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_autorizado1.id_for_label }}" class="form-label">Nombre Autorizado 1 *</label>
+                            {{ form.nombre_autorizado1 }}
+                            {% if form.nombre_autorizado1.errors %}
+                                <div class="text-danger">{{ form.nombre_autorizado1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_autorizado1.id_for_label }}" class="form-label">CI Autorizado 1 *</label>
+                            {{ form.ci_autorizado1 }}
+                            {% if form.ci_autorizado1.errors %}
+                                <div class="text-danger">{{ form.ci_autorizado1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_autorizado2.id_for_label }}" class="form-label">Nombre Autorizado 2</label>
+                            {{ form.nombre_autorizado2 }}
+                            {% if form.nombre_autorizado2.errors %}
+                                <div class="text-danger">{{ form.nombre_autorizado2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_autorizado2.id_for_label }}" class="form-label">CI Autorizado 2</label>
+                            {{ form.ci_autorizado2 }}
+                            {% if form.ci_autorizado2.errors %}
+                                <div class="text-danger">{{ form.ci_autorizado2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_autorizado3.id_for_label }}" class="form-label">Nombre Autorizado 3</label>
+                            {{ form.nombre_autorizado3 }}
+                            {% if form.nombre_autorizado3.errors %}
+                                <div class="text-danger">{{ form.nombre_autorizado3.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_autorizado3.id_for_label }}" class="form-label">CI Autorizado 3</label>
+                            {{ form.ci_autorizado3 }}
+                            {% if form.ci_autorizado3.errors %}
+                                <div class="text-danger">{{ form.ci_autorizado3.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <h5 class="mt-4 mb-3">Información VERSAT</h5>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.clienteversat.id_for_label }}" class="form-label">Código Cliente VERSAT</label>
+                            {{ form.clienteversat }}
+                            {% if form.clienteversat.errors %}
+                                <div class="text-danger">{{ form.clienteversat.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.cuentaversat.id_for_label }}" class="form-label">Cuenta VERSAT</label>
+                            {{ form.cuentaversat }}
+                            {% if form.cuentaversat.errors %}
+                                <div class="text-danger">{{ form.cuentaversat.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Contrato PDF</label>
+                            <div class="input-group">
+                                <input type="file" name="contrato_pdf" accept=".pdf" class="form-control" id="id_contrato_pdf">
+                                <button type="submit" name="subir_pdf" class="btn btn-success">
+                                    <i class="fas fa-upload me-1"></i>Subir PDF
+                                </button>
+                            </div>
+                            <small class="form-text text-muted">Solo archivos PDF permitidos. El archivo se renombrará al número de contrato.</small>
+                            {% if cliente.contrato_pdf %}
+                                <div class="mt-2">
+                                    <small class="text-muted">Archivo actual: {{ cliente.numero_contrato }}.pdf</small><br>
+                                    <a href="{{ cliente.contrato_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                                        <i class="fas fa-eye me-1"></i>Ver PDF
+                                    </a>
+                                    <a href="{{ cliente.contrato_pdf.url }}" download class="btn btn-sm btn-outline-success">
+                                        <i class="fas fa-download me-1"></i>Descargar PDF
+                                    </a>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.activo }}
+                                <label for="{{ form.activo.id_for_label }}" class="form-check-label">
+                                    Cliente Activo
+                                </label>
+                                {% if form.activo.errors %}
+                                    <div class="text-danger">{{ form.activo.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'ver_cliente' cliente.id %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-save me-2"></i>Actualizar Cliente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

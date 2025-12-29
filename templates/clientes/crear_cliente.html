@@ -1,0 +1,280 @@
+{# Template para crear un nuevo cliente #}
+{% extends 'base.html' %}
+
+{# Título de la página #}
+{% block title %}Crear Cliente - FACil{% endblock %}
+
+{# Contenido principal #}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        {# Tarjeta principal #}
+        <div class="card">
+            {# Encabezado de la tarjeta #}
+            <div class="card-header bg-primary text-white">
+                <h4 class="mb-0">
+                    <i class="fas fa-user-plus me-2"></i>Crear Nuevo Cliente
+                </h4>
+            </div>
+            {# Cuerpo de la tarjeta #}
+            <div class="card-body">
+                {# Formulario de creación #}
+                <form method="post">
+                    {% csrf_token %}
+                    {# Primera fila: Datos básicos #}
+                    <div class="row">
+                        {# Campo: Nombre del cliente #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre.id_for_label }}" class="form-label">Nombre del Cliente *</label>
+                            {{ form.nombre }}
+                            {% if form.nombre.errors %}
+                                <div class="text-danger">{{ form.nombre.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Número de contrato #}
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.numero_contrato.id_for_label }}" class="form-label">Número de Contrato *</label>
+                            {{ form.numero_contrato }}
+                            {% if form.numero_contrato.errors %}
+                                <div class="text-danger">{{ form.numero_contrato.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Fecha de firma del contrato #}
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.fecha_contrato.id_for_label }}" class="form-label">Fecha Contrato *</label>
+                            {{ form.fecha_contrato }}
+                            {% if form.fecha_contrato.errors %}
+                                <div class="text-danger">{{ form.fecha_contrato.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Fecha de vencimiento del contrato #}
+                        <div class="col-md-3 mb-3">
+                            <label for="{{ form.fecha_vencimiento_contrato.id_for_label }}" class="form-label">Fecha Vencimiento Contrato</label>
+                            {{ form.fecha_vencimiento_contrato }}
+                            {% if form.fecha_vencimiento_contrato.errors %}
+                                <div class="text-danger">{{ form.fecha_vencimiento_contrato.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Segunda fila: Códigos fiscales #}
+                    <div class="row">
+                        {# Campo: Código REEUP #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.codigo_reeup.id_for_label }}" class="form-label">Código REEUP *</label>
+                            {{ form.codigo_reeup }}
+                            {% if form.codigo_reeup.errors %}
+                                <div class="text-danger">{{ form.codigo_reeup.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Código NIT #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.codigo_nit.id_for_label }}" class="form-label">Código NIT *</label>
+                            {{ form.codigo_nit }}
+                            {% if form.codigo_nit.errors %}
+                                <div class="text-danger">{{ form.codigo_nit.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Tercera fila: Datos bancarios y dirección #}
+                    <div class="row">
+                        {# Campo: Cuenta bancaria en CUP #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.cuenta_bancaria_cup.id_for_label }}" class="form-label">Cuenta Bancaria CUP *</label>
+                            {{ form.cuenta_bancaria_cup }}
+                            {% if form.cuenta_bancaria_cup.errors %}
+                                <div class="text-danger">{{ form.cuenta_bancaria_cup.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Dirección postal #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.direccion_postal.id_for_label }}" class="form-label">Dirección Postal *</label>
+                            {{ form.direccion_postal }}
+                            {% if form.direccion_postal.errors %}
+                                <div class="text-danger">{{ form.direccion_postal.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Cuarta fila: Datos de contacto #}
+                    <div class="row">
+                        {# Campo: Correo electrónico #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.correo_electronico.id_for_label }}" class="form-label">Correo Electrónico</label>
+                            {{ form.correo_electronico }}
+                            {% if form.correo_electronico.errors %}
+                                <div class="text-danger">{{ form.correo_electronico.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Teléfonos #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.telefonos.id_for_label }}" class="form-label">Teléfonos</label>
+                            {{ form.telefonos }}
+                            {% if form.telefonos.errors %}
+                                <div class="text-danger">{{ form.telefonos.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Sección: Información del Director #}
+                    <h5 class="mt-4 mb-3">Información del Director</h5>
+                    <div class="row">
+                        {# Campo: Nombre del director #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_director.id_for_label }}" class="form-label">Nombre del Director *</label>
+                            {{ form.nombre_director }}
+                            {% if form.nombre_director.errors %}
+                                <div class="text-danger">{{ form.nombre_director.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: CI del director #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_director.id_for_label }}" class="form-label">CI del Director *</label>
+                            {{ form.ci_director }}
+                            {% if form.ci_director.errors %}
+                                <div class="text-danger">{{ form.ci_director.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Sección: Información del Económico #}
+                    <h5 class="mt-4 mb-3">Información del Económico</h5>
+                    <div class="row">
+                        {# Campo: Nombre del económico #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_economico.id_for_label }}" class="form-label">Nombre del Económico *</label>
+                            {{ form.nombre_economico }}
+                            {% if form.nombre_economico.errors %}
+                                <div class="text-danger">{{ form.nombre_economico.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: CI del económico #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_economico.id_for_label }}" class="form-label">CI del Económico *</label>
+                            {{ form.ci_economico }}
+                            {% if form.ci_economico.errors %}
+                                <div class="text-danger">{{ form.ci_economico.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Sección: Personas Autorizadas #}
+                    <h5 class="mt-4 mb-3">Personas Autorizadas a Facturar</h5>
+                    {# Primera persona autorizada (obligatoria) #}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_autorizado1.id_for_label }}" class="form-label">Nombre Autorizado 1 *</label>
+                            {{ form.nombre_autorizado1 }}
+                            {% if form.nombre_autorizado1.errors %}
+                                <div class="text-danger">{{ form.nombre_autorizado1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_autorizado1.id_for_label }}" class="form-label">CI Autorizado 1 *</label>
+                            {{ form.ci_autorizado1 }}
+                            {% if form.ci_autorizado1.errors %}
+                                <div class="text-danger">{{ form.ci_autorizado1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Segunda persona autorizada (opcional) #}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_autorizado2.id_for_label }}" class="form-label">Nombre Autorizado 2</label>
+                            {{ form.nombre_autorizado2 }}
+                            {% if form.nombre_autorizado2.errors %}
+                                <div class="text-danger">{{ form.nombre_autorizado2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_autorizado2.id_for_label }}" class="form-label">CI Autorizado 2</label>
+                            {{ form.ci_autorizado2 }}
+                            {% if form.ci_autorizado2.errors %}
+                                <div class="text-danger">{{ form.ci_autorizado2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Tercera persona autorizada (opcional) #}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.nombre_autorizado3.id_for_label }}" class="form-label">Nombre Autorizado 3</label>
+                            {{ form.nombre_autorizado3 }}
+                            {% if form.nombre_autorizado3.errors %}
+                                <div class="text-danger">{{ form.nombre_autorizado3.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.ci_autorizado3.id_for_label }}" class="form-label">CI Autorizado 3</label>
+                            {{ form.ci_autorizado3 }}
+                            {% if form.ci_autorizado3.errors %}
+                                <div class="text-danger">{{ form.ci_autorizado3.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Sección: Datos VERSAT #}
+                    <h5 class="mt-4 mb-3">Información VERSAT</h5>
+                    <div class="row">
+                        {# Campo: Código cliente VERSAT #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.clienteversat.id_for_label }}" class="form-label">Código Cliente VERSAT</label>
+                            {{ form.clienteversat }}
+                            {% if form.clienteversat.errors %}
+                                <div class="text-danger">{{ form.clienteversat.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        {# Campo: Cuenta VERSAT #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.cuentaversat.id_for_label }}" class="form-label">Cuenta VERSAT</label>
+                            {{ form.cuentaversat }}
+                            {% if form.cuentaversat.errors %}
+                                <div class="text-danger">{{ form.cuentaversat.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {# Última fila: Contrato PDF y Estado #}
+                    <div class="row">
+                        {# Campo: Archivo PDF del contrato #}
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.contrato_pdf.id_for_label }}" class="form-label">Contrato PDF</label>
+                            {{ form.contrato_pdf }}
+                            {% if form.contrato_pdf.errors %}
+                                <div class="text-danger">{{ form.contrato_pdf.errors.0 }}</div>
+                            {% endif %}
+                            <small class="form-text text-muted">Solo archivos PDF permitidos.</small>
+                        </div>
+                        {# Campo: Estado del cliente #}
+                        <div class="col-md-6 mb-3">
+                            <div class="form-check">
+                                {{ form.activo }}
+                                <label for="{{ form.activo.id_for_label }}" class="form-check-label">
+                                    Cliente Activo
+                                </label>
+                                {% if form.activo.errors %}
+                                    <div class="text-danger">{{ form.activo.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    {# Botones de acción #}
+                    <div class="d-flex justify-content-between">
+                        {# Botón Cancelar - Vuelve a la lista #}
+                        <a href="{% url 'lista_clientes' %}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-left me-2"></i>Cancelar
+                        </a>
+                        {# Botón Guardar - Envía el formulario #}
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Guardar Cliente
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

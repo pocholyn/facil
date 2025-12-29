@@ -1,0 +1,175 @@
+{% extends 'base.html' %}
+
+{% block title %}Ver Cliente - FACil{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0"><i class="fas fa-user me-2"></i>Detalles del Cliente: {{ cliente.nombre }}</h4>
+                <div>
+                    <a href="{% url 'editar_cliente' cliente.id %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-edit me-1"></i>Editar
+                    </a>
+                    <a href="{% url 'lista_clientes' %}" class="btn btn-light btn-sm">
+                        <i class="fas fa-arrow-left me-1"></i>Volver
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Información General</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th class="text-muted" width="40%">Nombre:</th>
+                                <td>{{ cliente.nombre }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Número de Contrato:</th>
+                                <td>{{ cliente.numero_contrato }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Fecha Contrato:</th>
+                                <td>{{ cliente.fecha_contrato|date:"d/m/Y" }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Fecha Vencimiento Contrato:</th>
+                                <td>{{ cliente.fecha_vencimiento_contrato|date:"d/m/Y"|default:"No especificada" }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Código REEUP:</th>
+                                <td>{{ cliente.codigo_reeup }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Código NIT:</th>
+                                <td>{{ cliente.codigo_nit }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Cuenta Bancaria CUP:</th>
+                                <td>{{ cliente.cuenta_bancaria_cup }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Dirección Postal:</th>
+                                <td>{{ cliente.direccion_postal }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Correo Electrónico:</th>
+                                <td>{{ cliente.correo_electronico|default:"No especificado" }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Teléfonos:</th>
+                                <td>{{ cliente.telefonos|default:"No especificado" }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Contrato PDF:</th>
+                                <td>
+                                    {% if cliente.contrato_pdf %}
+                                        <a href="{{ cliente.contrato_pdf.url }}" target="_blank" class="btn btn-sm btn-outline-primary me-2">
+                                            <i class="fas fa-eye me-1"></i>Ver PDF
+                                        </a>
+                                        <a href="{{ cliente.contrato_pdf.url }}" download class="btn btn-sm btn-outline-success">
+                                            <i class="fas fa-download me-1"></i>Descargar PDF
+                                        </a>
+                                    {% else %}
+                                        No disponible
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Estado:</th>
+                                <td>
+                                    {% if cliente.activo %}
+                                        <span class="badge bg-success">Activo</span>
+                                    {% else %}
+                                        <span class="badge bg-danger">Inactivo</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </table>
+                        
+                        <h5 class="text-primary mb-3 mt-4">Información VERSAT</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th class="text-muted" width="40%">Código Cliente:</th>
+                                <td>{{ cliente.clienteversat|default:"No especificado" }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">Cuenta:</th>
+                                <td>{{ cliente.cuentaversat|default:"No especificada" }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-primary mb-3">Información del Director</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th class="text-muted" width="40%">Nombre:</th>
+                                <td>{{ cliente.nombre_director }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">CI:</th>
+                                <td>{{ cliente.ci_director }}</td>
+                            </tr>
+                        </table>
+
+                        <h5 class="text-primary mb-3 mt-4">Información del Económico</h5>
+                        <table class="table table-borderless">
+                            <tr>
+                                <th class="text-muted" width="40%">Nombre:</th>
+                                <td>{{ cliente.nombre_economico }}</td>
+                            </tr>
+                            <tr>
+                                <th class="text-muted">CI:</th>
+                                <td>{{ cliente.ci_economico }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <h5 class="text-primary mb-3 mt-4">Personas Autorizadas a Facturar</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="card border-primary">
+                            <div class="card-header bg-primary text-white">
+                                <strong>Autorizado 1</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-1"><strong>Nombre:</strong> {{ cliente.nombre_autorizado1 }}</p>
+                                <p class="mb-0"><strong>CI:</strong> {{ cliente.ci_autorizado1 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% if cliente.nombre_autorizado2 %}
+                    <div class="col-md-4">
+                        <div class="card border-secondary">
+                            <div class="card-header bg-secondary text-white">
+                                <strong>Autorizado 2</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-1"><strong>Nombre:</strong> {{ cliente.nombre_autorizado2 }}</p>
+                                <p class="mb-0"><strong>CI:</strong> {{ cliente.ci_autorizado2 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if cliente.nombre_autorizado3 %}
+                    <div class="col-md-4">
+                        <div class="card border-info">
+                            <div class="card-header bg-info text-white">
+                                <strong>Autorizado 3</strong>
+                            </div>
+                            <div class="card-body">
+                                <p class="mb-1"><strong>Nombre:</strong> {{ cliente.nombre_autorizado3 }}</p>
+                                <p class="mb-0"><strong>CI:</strong> {{ cliente.ci_autorizado3 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

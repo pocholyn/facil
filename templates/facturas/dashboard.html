@@ -1,0 +1,478 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - FACil Sistema de Facturación{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="text-center mb-4">FACil Sistema de Facturación</h1>
+        </div>
+    </div>
+
+    <!-- Statistics Cards - Primera Fila -->
+    <div class="row mb-5">
+        <div class="col-md-2">
+            <div class="card bg-primary text-white h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title mb-2">Clientes Totales</h6>
+                    <h3 class="mb-0">{{ total_clients }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-success text-white h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title mb-2">Clientes Activos</h6>
+                    <h3 class="mb-0">{{ total_clients }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-warning text-white h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title mb-2">Facturas del Año</h6>
+                    <h3 class="mb-0">{{ total_invoices }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-info text-white h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title mb-2">Facturas del Mes</h6>
+                    <h3 class="mb-0">{{ invoices_this_month }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="card bg-teal text-white h-100">
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title mb-2"><i class="fas fa-file-invoice-dollar"></i> Facturado</h6>
+                    <h3 class="mb-0"><small>$ {{ total_facturado|floatformat:2 }}<br/>CUP</small></h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-2">
+            {% if ciclo_cobro >= 60 %}
+                <div class="card bg-danger text-white h-100">
+            {% elif ciclo_cobro >= 30 %}
+                <div class="card bg-warning text-white h-100">
+            {% else %}
+                <div class="card bg-success text-white h-100">
+            {% endif %}
+                <div class="card-body d-flex flex-column justify-content-center text-center">
+                    <h6 class="card-title mb-2"><i class="fas fa-clock"></i> Ciclo Cobro</h6>
+                    <h3 class="mb-0">{{ ciclo_cobro }} <small>días</small></h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards - Segunda Fila (Facturas Firmadas) -->
+    <div class="row mb-5">
+        <div class="col-md-12">
+            {% if signed_estado_id %}
+            <a href="{% url 'facturas:lista_facturas' %}?estado={{ signed_estado_id }}" class="text-decoration-none">
+            {% endif %}
+            <div class="card bg-danger text-white">
+                <div class="card-body">
+                    <div class="row align-items-center">
+                        <div class="col-md-3 text-center">
+                            <h5 class="card-title mb-0">Facturas Firmadas</h5>
+                            <small>(Pendientes por cobrar)</small>
+                        </div>
+                        <div class="col-md-3 text-center">
+                            <h3 class="mb-0">
+                                <a href="{% url 'facturas:lista_facturas' %}?estado={{ signed_estado_param }}" class="text-white text-decoration-none">
+                                    {{ signed_count }}
+                                </a>
+                            </h3>
+                            <small>facturas</small>
+                        </div>
+                        <div class="col-md-6 text-center">
+                            <h4 class="mb-0">
+                                <a href="{% url 'facturas:lista_facturas' %}?estado={{ signed_estado_param }}" class="text-white text-decoration-none">
+                                    $ {{ signed_total|floatformat:2 }}
+                                </a>
+                            </h4>
+                            <small>CUP importe total</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% if signed_estado_id %}
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Table: Performance by Sales Area -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Análisis de Planes vs Realización por Área de Venta</h5>
+                    <div class="d-flex align-items-center gap-2">
+                        <label for="mesSelector" class="mb-0">Seleccionar Mes:</label>
+                        <select id="mesSelector" class="form-select form-select-sm" style="width: 150px; display: inline-block;">
+                            <option value="1" {% if current_month == 1 %}selected{% endif %}>Enero</option>
+                            <option value="2" {% if current_month == 2 %}selected{% endif %}>Febrero</option>
+                            <option value="3" {% if current_month == 3 %}selected{% endif %}>Marzo</option>
+                            <option value="4" {% if current_month == 4 %}selected{% endif %}>Abril</option>
+                            <option value="5" {% if current_month == 5 %}selected{% endif %}>Mayo</option>
+                            <option value="6" {% if current_month == 6 %}selected{% endif %}>Junio</option>
+                            <option value="7" {% if current_month == 7 %}selected{% endif %}>Julio</option>
+                            <option value="8" {% if current_month == 8 %}selected{% endif %}>Agosto</option>
+                            <option value="9" {% if current_month == 9 %}selected{% endif %}>Septiembre</option>
+                            <option value="10" {% if current_month == 10 %}selected{% endif %}>Octubre</option>
+                            <option value="11" {% if current_month == 11 %}selected{% endif %}>Noviembre</option>
+                            <option value="12" {% if current_month == 12 %}selected{% endif %}>Diciembre</option>
+                        </select>
+                        <button id="btnActualizar" class="btn btn-sm btn-primary">Actualizar</button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Área de Venta</th>
+                                    <th class="text-end">Plan Mensual</th>
+                                    <th class="text-end">Real Mes ({{ current_month_name }})</th>
+                                    <th class="text-end">% Cumplimiento</th>
+                                    <th class="text-end">Plan Acumulado</th>
+                                    <th class="text-end">Real Acumulado</th>
+                                    <th class="text-end">Plan Anual</th>
+                                    <th class="text-end">Real Año Actual</th>
+                                    <th class="text-end">% Cumpl. Acum.</th>
+                                    <th class="text-end">% Cumpl. Anual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for area in invoices_by_area %}
+                                {% if area.is_total %}
+                                <tr class="table-info fw-bold">
+                                    <td>{{ area.area_venta__nombre }}</td>
+                                    <td class="text-end">$ {{ area.plan_mensual|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.real_mes|floatformat:2 }}</td>
+                                    <td class="text-end">{{ area.cumplimiento|floatformat:1 }}%</td>
+                                    <td class="text-end">$ {{ area.plan_acumulado|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.real_acumulado|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.plan_anual|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.real_anual|floatformat:2 }}</td>
+                                    <td class="text-end">{{ area.cumplimiento_acum|floatformat:1 }}%</td>
+                                    <td class="text-end">{{ area.cumplimiento_anual|floatformat:1 }}%</td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td>{{ area.area_venta__nombre }}</td>
+                                    <td class="text-end">$ {{ area.plan_mensual|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.real_mes|floatformat:2 }}</td>
+                                    <td class="text-end">
+                                        {% if area.cumplimiento >= 100 %}
+                                            <span class="badge bg-success">{{ area.cumplimiento|floatformat:1 }}%</span>
+                                        {% elif area.cumplimiento >= 80 %}
+                                            <span class="badge bg-warning">{{ area.cumplimiento|floatformat:1 }}%</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ area.cumplimiento|floatformat:1 }}%</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">$ {{ area.plan_acumulado|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.real_acumulado|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.plan_anual|floatformat:2 }}</td>
+                                    <td class="text-end">$ {{ area.real_anual|floatformat:2 }}</td>
+                                    <td class="text-end">
+                                        {% if area.cumplimiento_acum >= 100 %}
+                                            <span class="badge bg-success">{{ area.cumplimiento_acum|floatformat:1 }}%</span>
+                                        {% elif area.cumplimiento_acum >= 80 %}
+                                            <span class="badge bg-warning">{{ area.cumplimiento_acum|floatformat:1 }}%</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ area.cumplimiento_acum|floatformat:1 }}%</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="text-end">
+                                        {% if area.cumplimiento_anual >= 100 %}
+                                            <span class="badge bg-success">{{ area.cumplimiento_anual|floatformat:1 }}%</span>
+                                        {% elif area.cumplimiento_anual >= 80 %}
+                                            <span class="badge bg-warning">{{ area.cumplimiento_anual|floatformat:1 }}%</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">{{ area.cumplimiento_anual|floatformat:1 }}%</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% empty %}
+                                <tr>
+                                    <td colspan="9" class="text-center">No hay datos disponibles</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chart -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Ventas por Mes y Área de Venta (Año Actual)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="salesChart" width="400" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Month names in Spanish
+    const monthNames = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    
+    // Colors for different areas
+    const areaColors = [
+        { bg: 'rgba(75, 192, 75, 0.7)', border: 'rgba(75, 192, 75, 1)' },
+        { bg: 'rgba(54, 162, 235, 0.7)', border: 'rgba(54, 162, 235, 1)' },
+        { bg: 'rgba(255, 99, 132, 0.7)', border: 'rgba(255, 99, 132, 1)' },
+        { bg: 'rgba(255, 206, 86, 0.7)', border: 'rgba(255, 206, 86, 1)' },
+        { bg: 'rgba(153, 102, 255, 0.7)', border: 'rgba(153, 102, 255, 1)' },
+        { bg: 'rgba(255, 159, 64, 0.7)', border: 'rgba(255, 159, 64, 1)' },
+        { bg: 'rgba(46, 213, 115, 0.7)', border: 'rgba(46, 213, 115, 1)' },
+        { bg: 'rgba(0, 188, 212, 0.7)', border: 'rgba(0, 188, 212, 1)' },
+    ];
+    
+    // Raw data from Django
+    const rawMonthData = [
+        {% for month in amount_per_month %}
+        { mes: {{ month.fecha_factura__month }}, total: {{ month.total|stringformat:"f" }} },
+        {% endfor %}
+    ];
+    
+    // Raw area data from Django
+    const rawAreaData = [
+        {% for area in amount_by_area %}
+        { 
+            nombre: '{{ area.area_venta__nombre }}', 
+            total: {{ area.total|stringformat:"f" }},
+            monthly: [{% for m in area.monthly_data %}{{ m|stringformat:"f" }}{% if not forloop.last %}, {% endif %}{% endfor %}]
+        },
+        {% endfor %}
+    ];
+    
+    console.log('Raw month data:', rawMonthData);
+    console.log('Raw area data:', rawAreaData);
+    
+    // Prepare data for combined chart - months on X axis, areas as datasets
+    const salesData = {
+        labels: rawMonthData.map(item => monthNames[item.mes - 1]),
+        datasets: rawAreaData.map((area, index) => {
+            const colors = areaColors[index % areaColors.length];
+            return {
+                label: area.nombre,
+                data: area.monthly,
+                backgroundColor: colors.bg,
+                borderColor: colors.border,
+                borderWidth: 1
+            };
+        })
+    };
+    
+    console.log('Sales data:', salesData);
+
+    // Create sales chart
+    const salesCtx = document.getElementById('salesChart').getContext('2d');
+    new Chart(salesCtx, {
+        type: 'bar',
+        data: salesData,
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            indexAxis: 'x',
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top'
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return '$ ' + value.toLocaleString('es-ES', {minimumFractionDigits: 2});
+                        }
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Meses'
+                    }
+                }
+            }
+        }
+    });
+    
+    // Diccionario de meses
+    const mesesNombre = {
+        1: 'Enero', 2: 'Febrero', 3: 'Marzo', 4: 'Abril',
+        5: 'Mayo', 6: 'Junio', 7: 'Julio', 8: 'Agosto',
+        9: 'Septiembre', 10: 'Octubre', 11: 'Noviembre', 12: 'Diciembre'
+    };
+    
+    // Event listener for the update button
+    const btnActualizar = document.getElementById('btnActualizar');
+    const mesSelector = document.getElementById('mesSelector');
+    
+    function cargarDatos() {
+        const selectedMonth = mesSelector.value;
+        console.log('Cargando datos para mes:', selectedMonth);
+        
+        // Mostrar indicador de carga
+        btnActualizar.disabled = true;
+        btnActualizar.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
+        
+        // Fetch data from API - URL corregida
+        fetch(`/api/tabla-areas-por-mes/?mes=${selectedMonth}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'same-origin'  // Incluir cookies de sesión
+        })
+            .then(response => {
+                console.log('Response status:', response.status);
+                console.log('Response headers:', response.headers);
+                
+                if (!response.ok) {
+                    // Intentar leer el cuerpo de error
+                    return response.text().then(text => {
+                        console.error('Error response body:', text);
+                        throw new Error(`Error ${response.status}: ${text.substring(0, 200)}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Datos recibidos:', data);
+                if (data.success) {
+                    actualizarTabla(data);
+                } else {
+                    alert('Error al obtener los datos');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al cargar los datos: ' + error.message);
+            })
+            .finally(() => {
+                // Restaurar el botón
+                btnActualizar.disabled = false;
+                btnActualizar.innerHTML = 'Actualizar';
+            });
+    }
+    
+    // Event listeners
+    if (btnActualizar) {
+        btnActualizar.addEventListener('click', cargarDatos);
+    }
+    
+    if (mesSelector) {
+        mesSelector.addEventListener('change', cargarDatos);
+    }
+    
+    // Function to update table with new data
+    function actualizarTabla(data) {
+        console.log('Actualizando tabla para mes:', data.mes, data.mes_nombre);
+        
+        // Find the table - use a more specific selector
+        const tabla = document.querySelector('table.table');
+        
+        if (!tabla) {
+            console.error('Tabla no encontrada!');
+            return;
+        }
+        
+        const tableBody = tabla.querySelector('tbody');
+        
+        if (!tableBody) {
+            console.error('Tbody de la tabla no encontrado!');
+            return;
+        }
+        
+        // Update month name in header - find the third header cell
+        const headers = tabla.querySelectorAll('thead th');
+        console.log('Encabezados encontrados:', headers.length);
+        
+        if (headers.length > 2) {
+            headers[2].textContent = `Real Mes (${data.mes_nombre})`;
+            console.log('Encabezado actualizado:', headers[2].textContent);
+        }
+        
+        // Clear table
+        tableBody.innerHTML = '';
+        console.log('Tabla limpiada');
+        
+        // Add rows
+        if (data.areas && data.areas.length > 0) {
+            data.areas.forEach((area, index) => {
+                const tr = document.createElement('tr');
+                
+                if (area.is_total) {
+                    tr.className = 'table-info fw-bold';
+                }
+                
+                const badge1 = generarBadge(area.cumplimiento, area.is_total);
+                const badge2 = generarBadge(area.cumplimiento_acum, area.is_total);
+                const badge3 = generarBadge(area.cumplimiento_anual, area.is_total);
+                
+                tr.innerHTML = `
+                    <td>${area.area_venta__nombre}</td>
+                    <td class="text-end">$ ${parseFloat(area.plan_mensual).toFixed(2)}</td>
+                    <td class="text-end">$ ${parseFloat(area.real_mes).toFixed(2)}</td>
+                    <td class="text-end">${badge1}</td>
+                    <td class="text-end">$ ${parseFloat(area.plan_acumulado).toFixed(2)}</td>
+                    <td class="text-end">$ ${parseFloat(area.real_acumulado).toFixed(2)}</td>
+                    <td class="text-end">$ ${parseFloat(area.plan_anual).toFixed(2)}</td>
+                    <td class="text-end">$ ${parseFloat(area.real_anual).toFixed(2)}</td>
+                    <td class="text-end">${badge2}</td>
+                    <td class="text-end">${badge3}</td>
+                `;
+                
+                tableBody.appendChild(tr);
+                console.log(`Fila ${index} agregada: ${area.area_venta__nombre}`);
+            });
+        } else {
+            console.log('No hay datos de áreas');
+        }
+        
+        console.log('Tabla actualizada exitosamente');
+    }
+    
+    // Helper function to generate percentage badge
+    function generarBadge(percentage, isTotal) {
+        const value = parseFloat(percentage).toFixed(1);
+        
+        if (isTotal) {
+            return `${value}%`;
+        }
+        
+        const percent = parseFloat(percentage);
+        if (percent >= 100) {
+            return `<span class="badge bg-success">${value}%</span>`;
+        } else if (percent >= 80) {
+            return `<span class="badge bg-warning">${value}%</span>`;
+        } else {
+            return `<span class="badge bg-danger">${value}%</span>`;
+        }
+    }
+</script>
+{% endblock %}

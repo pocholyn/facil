@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Oferta #{{ oferta.numero_oferta }}</title>
+    <style>
+        @page {
+            size: a4 portrait;
+            margin: 2cm;
+            @frame header {
+                -pdf-frame-content: headerContent;
+                top: 1cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 3cm;
+            }
+            @frame content {
+                top: 4cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 22cm;
+            }
+            @frame footer {
+                -pdf-frame-content: footerContent;
+                bottom: 1cm;
+                margin-left: 2cm;
+                margin-right: 2cm;
+                height: 1cm;
+            }
+        }
+        body {
+            font-family: Helvetica;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .logo {
+            width: 150px;
+            height: auto;
+        }
+        .company-info {
+            margin-bottom: 20px;
+        }
+        .client-info {
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            -pdf-keep-with-next: true;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f5f5f5;
+        }
+        .total {
+            text-align: right;
+            font-weight: bold;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        {% if empresa.logo %}
+        <img src="{% with ''|add:request.scheme|add:'://'|add:request.get_host|add:empresa.logo.url as image_url %}{{ image_url }}{% endwith %}" alt="Logo" class="logo">
+        {% endif %}
+        <h1>OFERTA #{{ oferta.numero_oferta }}</h1>
+    </div>
+
+    <div class="company-info">
+        <h3>{{ empresa.nombre }}</h3>
+        <p>{{ empresa.direccion }}</p>
+        <p>Teléfono: {{ empresa.telefono }}</p>
+        <p>Email: {{ empresa.email }}</p>
+    </div>
+
+    <div class="client-info">
+        <h3>Cliente</h3>
+        <p><strong>Nombre:</strong> {{ oferta.cliente.nombre }}</p>
+        <p><strong>Contrato:</strong> {{ oferta.cliente.numero_contrato }}</p>
+        <p><strong>REEUP:</strong> {{ oferta.cliente.codigo_reeup }}</p>
+        <p><strong>NIT:</strong> {{ oferta.cliente.codigo_nit }}</p>
+        <p><strong>Dirección:</strong> {{ oferta.cliente.direccion_postal }}</p>
+    </div>
+
+    <div class="offer-info">
+        <p><strong>Fecha:</strong> {{ oferta.fecha_oferta }}</p>
+        <p><strong>Área de Venta:</strong> {{ oferta.area_venta.nombre }}</p>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Actividad</th>
+                <th>Cantidad</th>
+                <th>Precio</th>
+                <th>Importe</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item.actividad.codigo }} - {{ item.actividad.actividad }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>{{ item.precio|floatformat:2 }} CUP</td>
+                <td>{{ item.importe|floatformat:2 }} CUP</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="total">Total:</td>
+                <td>{{ total|floatformat:2 }} CUP</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    {% if oferta.observaciones %}
+    <div class="observations">
+        <h3>Observaciones</h3>
+        <p>{{ oferta.observaciones }}</p>
+    </div>
+    {% endif %}
+
+    <div class="signatures" style="margin-top: 50px;">
+        <table style="border: none;">
+            <tr>
+                <td style="border: none; width: 50%; text-align: center;">
+                    _______________________<br>
+                    Elaborado por<br>
+                    {{ oferta.created_by.get_full_name|default:oferta.created_by.username }}
+                </td>
+                <td style="border: none; width: 50%; text-align: center;">
+                    _______________________<br>
+                    Aprobado por
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="footer">
+        <p>Este documento es una oferta y no constituye una factura oficial.</p>
+    </div>
+</body>
+</html>

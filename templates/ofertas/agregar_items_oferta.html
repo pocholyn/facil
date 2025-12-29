@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Items a Oferta - FACil{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h3 class="card-title">Agregar Items a Oferta #{{ oferta.numero_oferta }}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post" id="agregarItemForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="agregar" value="1">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="actividad" class="form-label">Actividad</label>
+                                    <select name="actividad" id="actividad" class="form-control" required>
+                                        <option value="">Seleccione una actividad...</option>
+                                        {% for actividad in actividades %}
+                                        <option value="{{ actividad.id }}" data-precio="{{ actividad.precio }}">
+                                            {{ actividad.codigo }} - {{ actividad.actividad }}
+                                        </option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="precio" class="form-label">Precio</label>
+                                    <input type="number" id="precio" class="form-control" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="cantidad" class="form-label">Cantidad</label>
+                                    <input type="number" name="cantidad" id="cantidad" class="form-control" min="1" step="1" required>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="mb-3">
+                                    <label for="importe" class="form-label">Importe</label>
+                                    <input type="number" id="importe" class="form-control" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-plus"></i> Agregar Item
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Lista de Items -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Items de la Oferta</h3>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Actividad</th>
+                                    <th>Cantidad</th>
+                                    <th>Precio</th>
+                                    <th>Importe</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in items %}
+                                <tr>
+                                    <td>{{ item.actividad_codigo }} - {{ item.actividad_nombre }}</td>
+                                    <td>{{ item.cantidad }}</td>
+                                    <td>{{ item.precio|floatformat:2 }} CUP</td>
+                                    <td>{{ item.importe|floatformat:2 }} CUP</td>
+                                    <td>
+                                        <form method="post" style="display: inline;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="eliminar" value="1">
+                                            <input type="hidden" name="item_id" value="{{ forloop.counter0 }}">
+                                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Está seguro de eliminar este item?')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center">No hay items agregados</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="3" class="text-end">Total:</th>
+                                    <th>{{ total|floatformat:2 }} CUP</th>
+                                    <th></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Resumen y Acciones -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title">Resumen de la Oferta</h3>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-4">Cliente:</dt>
+                        <dd class="col-sm-8">{{ oferta_data.cliente_nombre }}</dd>
+
+                        <dt class="col-sm-4">Área:</dt>
+                        <dd class="col-sm-8">{{ oferta_data.area_venta_nombre }}</dd>
+
+                        {% if oferta_data.observaciones %}
+                        <dt class="col-sm-4">Observaciones:</dt>
+                        <dd class="col-sm-8">{{ oferta_data.observaciones }}</dd>
+                        {% endif %}
+
+                        <dt class="col-sm-4">Total:</dt>
+                        <dd class="col-sm-8">{{ total|floatformat:2 }} CUP</dd>
+                    </dl>
+
+                    <form method="post" class="mt-4">
+                        {% csrf_token %}
+                        <input type="hidden" name="terminar" value="1">
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'ofertas:lista_ofertas' %}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-check"></i> Finalizar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function calcularImporte() {
+    const precio = parseFloat(document.getElementById('precio').value) || 0;
+    const cantidad = parseInt(document.getElementById('cantidad').value) || 0;
+    const importe = precio * cantidad;
+    document.getElementById('importe').value = importe.toFixed(2);
+}
+
+document.getElementById('actividad').addEventListener('change', function() {
+    const selectedOption = this.options[this.selectedIndex];
+    if (selectedOption.value) {
+        const precio = selectedOption.dataset.precio;
+        document.getElementById('precio').value = parseFloat(precio).toFixed(2);
+    } else {
+        document.getElementById('precio').value = '';
+    }
+    calcularImporte();
+});
+
+document.getElementById('cantidad').addEventListener('input', calcularImporte);
+</script>
+{% endblock %}

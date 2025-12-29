@@ -1,0 +1,32 @@
+# Django y componentes principales
+Django>=4.2,<5.0
+
+# Base de datos
+psycopg2-binary>=2.9.6  # Para PostgreSQL en producción
+dj-database-url>=2.1.0  # Para configuración de base de datos desde URL
+
+# Manejo de archivos y procesamiento
+Pillow>=10.0.0  # Para procesamiento de imágenes
+python-magic>=0.4.27  # Para detección de tipos MIME
+reportlab>=4.0.4  # Para generación de PDFs
+xhtml2pdf>=0.2.11  # Para conversión HTML a PDF
+
+# Seguridad
+django-environ>=0.10.0  # Para manejo de variables de entorno
+django-debug-toolbar>=4.1.0  # Para debugging (solo desarrollo)
+
+# Servidor WSGI para producción
+gunicorn>=21.2.0
+
+# Utilidades
+python-dateutil>=2.8.2  # Para manejo avanzado de fechas
+pytz  # Para soporte de zonas horarias
+
+# Caché y optimización
+django-cache-memoize>=0.1.10
+whitenoise>=6.5.0  # Para servir archivos estáticos
+
+# Testing y desarrollo
+pytest-django>=4.5.2
+coverage>=7.2.7
+factory-boy>=3.3.0

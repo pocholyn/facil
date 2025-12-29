@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Editar Factura - FACil{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <!-- Main content -->
+        <main class="col-12 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Editar Factura {{ factura.numero_factura }}</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Editar Estado y Observaciones</h5>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="{{ form.estado.id_for_label }}" class="form-label">Estado</label>
+                                    {{ form.estado }}
+                                    {% if form.estado.errors %}
+                                        <div class="text-danger">{{ form.estado.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="{{ form.observaciones.id_for_label }}" class="form-label">Observaciones</label>
+                                    {{ form.observaciones }}
+                                    {% if form.observaciones.errors %}
+                                        <div class="text-danger">{{ form.observaciones.errors }}</div>
+                                    {% endif %}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                                <a href="{% url 'facturas:ver_factura' factura.id %}" class="btn btn-secondary">Cancelar</a>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Información de la Factura</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Número:</strong> {{ factura.numero_factura }}</p>
+                            <p><strong>Fecha:</strong> {{ factura.fecha_factura|date:"d/m/Y" }}</p>
+                            <p><strong>Cliente:</strong> {{ factura.cliente.nombre }}</p>
+                            <p><strong>Área de Venta:</strong> {{ factura.area_venta.nombre }}</p>
+                            <p><strong>Total:</strong> ${{ total|floatformat:2 }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4">
+                <h4>Actividades</h4>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Actividad</th>
+                            <th>Cantidad</th>
+                            <th>Precio Unitario</th>
+                            <th>Importe</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.actividad.actividad }}</td>
+                            <td>{{ item.cantidad }}</td>
+                            <td>${{ item.precio|floatformat:2 }}</td>
+                            <td>${{ item.importe|floatformat:2 }}</td>
+                            <td>
+                                <form method="post" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="item_id" value="{{ item.id }}">
+                                    <input type="number" name="nueva_cantidad" value="{{ item.cantidad }}" min="1" style="width: 60px;" class="form-control d-inline">
+                                    <button type="submit" name="actualizar_cantidad" class="btn btn-sm btn-warning">
+                                        <i class="fas fa-edit"></i> Actualizar
+                                    </button>
+                                    <button type="submit" name="eliminar_item" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center">No hay actividades agregadas.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h5>Agregar Nueva Actividad</h5>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label for="id_actividad" class="form-label">Actividad</label>
+                                <select name="actividad" id="id_actividad" class="form-control">
+                                    {% for actividad in actividades %}
+                                    <option value="{{ actividad.id }}">{{ actividad.actividad }} - ${{ actividad.precio|floatformat:2 }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label for="id_cantidad" class="form-label">Cantidad</label>
+                                <input type="number" name="cantidad" id="id_cantidad" class="form-control" min="1" value="1">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="mb-3">
+                                <label class="form-label">&nbsp;</label>
+                                <button type="submit" name="agregar_item" class="btn btn-success form-control">
+                                    <i class="fas fa-save"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <a href="{% url 'facturas:lista_facturas' %}" class="btn btn-info btn-lg">Terminar Edición</a>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+{% endblock %}
